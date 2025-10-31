@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/university")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UniversityController {
     @Autowired
     private UniversityService universityService;
