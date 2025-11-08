@@ -1,0 +1,14 @@
+# Django and REST Framework
+Django>=4.2
+djangorestframework>=3.14
+django-cors-headers>=4.3
+python-decouple>=3.8
+
+# AI/ML Libraries
+transformers>=4.35
+torch
+sentencepiece
+protobuf
+
+# Additional dependencies
+requests
