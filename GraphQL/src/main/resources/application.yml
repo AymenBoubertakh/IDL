@@ -1,0 +1,123 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: api-gateway
+  
+  cloud:
+    gateway:
+      # Global CORS Configuration
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3000"
+              - "http://127.0.0.1:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+            maxAge: 3600
+      
+      # Route Definitions
+      routes:
+        # ==========================================
+        # STUDENT SERVICE ROUTES (Spring Boot - Port 8081)
+        # ==========================================
+        - id: student-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/students/**
+          filters:
+            - RewritePath=/api/students/(?<segment>.*), /api/students/$\{segment}
+            - name: LoggingFilter
+        
+        - id: student-service-universities
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/universities/**
+          filters:
+            - RewritePath=/api/universities/(?<segment>.*), /api/universities/$\{segment}
+            - name: LoggingFilter
+        
+        # ==========================================
+        # COURSE SERVICE ROUTES (Django - Port 8000)
+        # ==========================================
+        - id: course-service
+          uri: http://localhost:8000
+          predicates:
+            - Path=/api/courses/**
+          filters:
+            - RewritePath=/api/courses/(?<segment>.*), /api/courses/$\{segment}
+            - name: LoggingFilter
+        
+        - id: course-service-enrollments
+          uri: http://localhost:8000
+          predicates:
+            - Path=/api/enrollments/**
+          filters:
+            - RewritePath=/api/enrollments/(?<segment>.*), /api/enrollments/$\{segment}
+            - name: LoggingFilter
+        
+        # ==========================================
+        # CHATBOT SERVICE ROUTES (Django - Port 8080)
+        # ==========================================
+        - id: chatbot-service-translate
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/chatbot/translate/**,/api/translate/**
+          filters:
+            - RewritePath=/api/chatbot/translate/(?<segment>.*), /api/translate/$\{segment}
+            - RewritePath=/api/translate/(?<segment>.*), /api/translate/$\{segment}
+            - name: LoggingFilter
+        
+        - id: chatbot-service-summarize
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/chatbot/summarize/**,/api/summarize/**
+          filters:
+            - RewritePath=/api/chatbot/summarize/(?<segment>.*), /api/summarize/$\{segment}
+            - RewritePath=/api/summarize/(?<segment>.*), /api/summarize/$\{segment}
+            - name: LoggingFilter
+        
+        - id: chatbot-service-languages
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/chatbot/languages/**,/api/languages/**
+          filters:
+            - RewritePath=/api/chatbot/languages/(?<segment>.*), /api/languages/$\{segment}
+            - RewritePath=/api/languages/(?<segment>.*), /api/languages/$\{segment}
+            - name: LoggingFilter
+        
+        - id: chatbot-service-health
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/chatbot/health/**
+          filters:
+            - RewritePath=/api/chatbot/health/(?<segment>.*), /api/health/$\{segment}
+            - name: LoggingFilter
+
+# Actuator Configuration (Health checks and monitoring)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always
+
+# Logging Configuration
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    com.example.gateway: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

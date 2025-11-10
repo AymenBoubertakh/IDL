@@ -1,0 +1,37 @@
+        # ==========================================
+        # CHATBOT SERVICE ROUTES (Django - Port 8001)
+        # ==========================================
+        - id: chatbot-service-translate
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/chatbot/translate/**,/api/translate/**
+          filters:
+            - RewritePath=/api/chatbot/translate/(?<segment>.*), /api/translate/$\{segment}
+            - RewritePath=/api/translate/(?<segment>.*), /api/translate/$\{segment}
+            - name: LoggingFilter
+        
+        - id: chatbot-service-summarize
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/chatbot/summarize/**,/api/summarize/**
+          filters:
+            - RewritePath=/api/chatbot/summarize/(?<segment>.*), /api/summarize/$\{segment}
+            - RewritePath=/api/summarize/(?<segment>.*), /api/summarize/$\{segment}
+            - name: LoggingFilter
+        
+        - id: chatbot-service-languages
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/chatbot/languages/**,/api/languages/**
+          filters:
+            - RewritePath=/api/chatbot/languages/(?<segment>.*), /api/languages/$\{segment}
+            - RewritePath=/api/languages/(?<segment>.*), /api/languages/$\{segment}
+            - name: LoggingFilter
+        
+        - id: chatbot-service-health
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/chatbot/health/**
+          filters:
+            - RewritePath=/api/chatbot/health/(?<segment>.*), /api/health/$\{segment}
+            - name: LoggingFilter

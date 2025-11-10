@@ -1,0 +1,102 @@
+# ==========================================
+# TYPE DEFINITIONS
+# ==========================================
+
+type University {
+  id: ID!
+  name: String!
+  location: String!
+  students: [Student!]
+}
+
+type Student {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  university: University
+  courses: [Course!]
+}
+
+type Course {
+  id: ID!
+  name: String!
+  instructor: String!
+  category: String!
+  schedule: String!
+  createdAt: String
+  updatedAt: String
+  students: [Student!]
+}
+
+type Enrollment {
+  id: ID!
+  studentId: Int!
+  course: Course!
+  enrolledAt: String!
+}
+
+type Translation {
+  originalText: String!
+  translatedText: String!
+  sourceLanguage: String!
+  targetLanguage: String!
+  sourceLanguageName: String
+  targetLanguageName: String
+}
+
+type Summary {
+  originalText: String!
+  summary: String!
+  originalLength: Int!
+  summaryLength: Int!
+  originalWordCount: Int
+  summaryWordCount: Int
+}
+
+type Language {
+  code: String!
+  name: String!
+}
+
+type LanguagesResponse {
+  languages: [Language!]!
+  count: Int!
+}
+
+# ==========================================
+# QUERY DEFINITIONS
+# ==========================================
+
+type Query {
+  # Student Queries
+  student(id: ID!): Student
+  students: [Student!]!
+  searchStudents(keyword: String!): [Student!]!
+  studentsByUniversity(universityId: ID!): [Student!]!
+  
+  # University Queries
+  university(id: ID!): University
+  universities: [University!]!
+  searchUniversities(name: String!): [University!]!
+  
+  # Course Queries
+  course(id: ID!): Course
+  courses: [Course!]!
+  searchCourses(keyword: String!): [Course!]!
+  coursesByCategory(category: String!): [Course!]!
+  coursesByInstructor(instructor: String!): [Course!]!
+  
+  # Enrollment Queries
+  enrollments: [Enrollment!]!
+  enrollmentsByStudent(studentId: Int!): [Enrollment!]!
+  
+  # Combined Queries (Power of GraphQL!)
+  studentWithCourses(id: ID!): Student
+  courseWithStudents(id: ID!): Course
+  
+  # Chatbot Queries
+  translate(text: String!, sourceLang: String!, targetLang: String!): Translation
+  summarize(text: String!, maxLength: Int, minLength: Int): Summary
+  supportedLanguages: LanguagesResponse
+}
