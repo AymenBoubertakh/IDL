@@ -108,8 +108,11 @@ REST_FRAMEWORK = {
     ],
 }
 
-# CORS settings - Allow all origins for microservices communication
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS settings - Allow requests from API Gateway only (NOT from frontend directly)
+# The API Gateway (port 9090) handles CORS for the frontend
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:9090",  # API Gateway
+]
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -119,6 +122,9 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
+CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOW_CREDENTIALS = False
 
 # Hugging Face Model Cache Directory (optional - customize if needed)
 # Models will be cached in ~/.cache/huggingface/ by default

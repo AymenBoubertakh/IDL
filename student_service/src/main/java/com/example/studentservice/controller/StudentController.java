@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
-@CrossOrigin(origins = "*")
+// @CrossOrigin removed - CORS is handled by API Gateway
 public class StudentController {
     
     @Autowired

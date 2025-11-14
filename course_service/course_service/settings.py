@@ -112,10 +112,10 @@ REST_FRAMEWORK = {
     ],
 }
 
-# CORS settings - Allow frontend to communicate with backend
+# CORS settings - Allow requests from API Gateway only (NOT from frontend directly)
+# The API Gateway (port 9090) handles CORS for the frontend
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React default port
-    "http://127.0.0.1:3000",
+    "http://localhost:9090",  # API Gateway
 ]
 
 CORS_ALLOW_METHODS = [
@@ -126,3 +126,6 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
+CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOW_CREDENTIALS = False

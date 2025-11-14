@@ -11,6 +11,7 @@ export const CONFIG = {
   COURSE_SERVICE_URL: process.env.COURSE_SERVICE_URL || 'http://localhost:8000',
   CHATBOT_SERVICE_URL: process.env.CHATBOT_SERVICE_URL || 'http://localhost:8001',
   
-  // CORS
-  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  // CORS - Not used since API Gateway (port 9090) handles CORS
+  // GraphQL accepts requests from API Gateway only
+  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:9090',
 };
