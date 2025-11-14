@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus, Filter, SortAsc } from 'lucide-react';
 import { studentService } from '../services/studentService';
 import StudentCard from '../components/students/StudentCard';
@@ -9,6 +10,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
 export default function Students() {
+  const [searchParams] = useSearchParams();
   const [students, setStudents] = useState([]);
   const [universities, setUniversities] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
@@ -22,7 +24,12 @@ export default function Students() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+    // Check if there's a university filter in URL params
+    const universityId = searchParams.get('university');
+    if (universityId) {
+      setFilterUniversity(universityId);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     filterAndSortStudents();

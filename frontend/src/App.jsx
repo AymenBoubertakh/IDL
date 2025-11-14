@@ -6,6 +6,7 @@ import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import Courses from './pages/Courses';
+import Universities from './pages/Universities';
 import Chatbot from './pages/Chatbot';
 import StudentCourseRelations from './pages/StudentCourseRelations';
 import { ROUTES } from './utils/constants';
@@ -43,6 +44,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path={ROUTES.STUDENTS} element={<Students />} />
             <Route path={ROUTES.COURSES} element={<Courses />} />
+            <Route path={ROUTES.UNIVERSITIES} element={<Universities />} />
             <Route path={ROUTES.CHATBOT} element={<Chatbot />} />
             <Route path={ROUTES.RELATIONS} element={<StudentCourseRelations />} />
           </Route>

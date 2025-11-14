@@ -5,7 +5,8 @@ import {
   BookOpen, 
   Bot, 
   Network,
-  Building2 
+  Building2,
+  School 
 } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
 
@@ -13,6 +14,7 @@ const navigation = [
   { name: 'Dashboard', to: ROUTES.DASHBOARD, icon: LayoutDashboard },
   { name: 'Students', to: ROUTES.STUDENTS, icon: Users },
   { name: 'Courses', to: ROUTES.COURSES, icon: BookOpen },
+  { name: 'Universities', to: ROUTES.UNIVERSITIES, icon: School },
   { name: 'Relations', to: ROUTES.RELATIONS, icon: Network },
   { name: 'AI Chatbot', to: ROUTES.CHATBOT, icon: Bot },
 ];

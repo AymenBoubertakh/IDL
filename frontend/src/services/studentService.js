@@ -51,9 +51,35 @@ export const studentService = {
     return response.data;
   },
 
+  // Get university by ID
+  getUniversityById: async (id) => {
+    const response = await api.get(`/api/universities/${id}`);
+    return response.data;
+  },
+
   // Create university
   createUniversity: async (universityData) => {
     const response = await api.post('/api/universities', universityData);
+    return response.data;
+  },
+
+  // Update university
+  updateUniversity: async (id, universityData) => {
+    const response = await api.put(`/api/universities/${id}`, universityData);
+    return response.data;
+  },
+
+  // Delete university
+  deleteUniversity: async (id) => {
+    const response = await api.delete(`/api/universities/${id}`);
+    return response.data;
+  },
+
+  // Search universities
+  searchUniversities: async (name) => {
+    const response = await api.get('/api/universities/search', {
+      params: { name },
+    });
     return response.data;
   },
 };
