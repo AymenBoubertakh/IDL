@@ -1,8 +1,8 @@
-import { Mail, MapPin, BookOpen, Edit, Trash2 } from 'lucide-react';
+import { Mail, MapPin, BookOpen, Edit, Trash2, GraduationCap } from 'lucide-react';
 import { getInitials } from '../../utils/helpers';
 import Button from '../common/Button';
 
-export default function StudentCard({ student, onEdit, onDelete, onViewCourses }) {
+export default function StudentCard({ student, enrollmentCount = 0, onEdit, onDelete, onViewCourses }) {
   return (
     <div className="card hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
@@ -27,6 +27,13 @@ export default function StudentCard({ student, onEdit, onDelete, onViewCourses }
                 {student.university.name}
               </div>
             )}
+            {/* Enrollment Count Badge */}
+            <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                <GraduationCap className="w-3 h-3" />
+                {enrollmentCount} {enrollmentCount === 1 ? 'Course' : 'Courses'}
+              </div>
+            </div>
           </div>
         </div>
 

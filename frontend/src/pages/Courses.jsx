@@ -3,6 +3,7 @@ import { Plus, Filter, SortAsc } from 'lucide-react';
 import { courseService } from '../services/courseService';
 import CourseCard from '../components/courses/CourseCard';
 import CourseModal from '../components/courses/CourseModal';
+import CourseStudentsModal from '../components/courses/CourseStudentsModal';
 import SearchBar from '../components/common/SearchBar';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -10,6 +11,7 @@ import toast from 'react-hot-toast';
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,6 +20,8 @@ export default function Courses() {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [isStudentsModalOpen, setIsStudentsModalOpen] = useState(false);
+  const [studentsModalCourse, setStudentsModalCourse] = useState(null);
 
   useEffect(() => {
     fetchCourses();
@@ -29,8 +33,12 @@ export default function Courses() {
 
   const fetchCourses = async () => {
     try {
-      const data = await courseService.getAllCourses();
-      setCourses(data);
+      const [coursesData, enrollmentsData] = await Promise.all([
+        courseService.getAllCourses(),
+        courseService.getAllEnrollments(),
+      ]);
+      setCourses(coursesData);
+      setEnrollments(enrollmentsData);
     } catch (error) {
       toast.error('Failed to load courses');
     } finally {
@@ -111,10 +119,12 @@ export default function Courses() {
   };
 
   const handleViewStudents = (course) => {
-    toast(`Viewing students for ${course.name} - Feature coming soon!`, {
-      icon: 'ℹ️',
-      duration: 3000,
-    });
+    setStudentsModalCourse(course);
+    setIsStudentsModalOpen(true);
+  };
+
+  const getEnrollmentCount = (courseId) => {
+    return enrollments.filter((e) => e.course === courseId).length;
   };
 
   // Get unique categories for filter
@@ -187,6 +197,7 @@ export default function Courses() {
             <CourseCard
               key={course.id}
               course={course}
+              enrollmentCount={getEnrollmentCount(course.id)}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onViewStudents={handleViewStudents}
@@ -205,6 +216,14 @@ export default function Courses() {
         onClose={() => setIsModalOpen(false)}
         course={selectedCourse}
         onSubmit={handleSubmit}
+      />
+
+      {/* Students Modal */}
+      <CourseStudentsModal
+        isOpen={isStudentsModalOpen}
+        onClose={() => setIsStudentsModalOpen(false)}
+        course={studentsModalCourse}
+        onEnrollmentChange={fetchCourses}
       />
     </div>
   );

@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Plus, Filter, SortAsc } from 'lucide-react';
 import { studentService } from '../services/studentService';
+import { courseService } from '../services/courseService';
 import StudentCard from '../components/students/StudentCard';
 import StudentModal from '../components/students/StudentModal';
+import StudentCoursesModal from '../components/students/StudentCoursesModal';
 import SearchBar from '../components/common/SearchBar';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -13,6 +15,7 @@ export default function Students() {
   const [searchParams] = useSearchParams();
   const [students, setStudents] = useState([]);
   const [universities, setUniversities] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +24,8 @@ export default function Students() {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
+  const [coursesModalStudent, setCoursesModalStudent] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -37,12 +42,14 @@ export default function Students() {
 
   const fetchData = async () => {
     try {
-      const [studentsData, universitiesData] = await Promise.all([
+      const [studentsData, universitiesData, enrollmentsData] = await Promise.all([
         studentService.getAllStudents(),
         studentService.getAllUniversities(),
+        courseService.getAllEnrollments(),
       ]);
       setStudents(studentsData);
       setUniversities(universitiesData);
+      setEnrollments(enrollmentsData);
     } catch (error) {
       toast.error('Failed to load students');
     } finally {
@@ -125,10 +132,12 @@ export default function Students() {
   };
 
   const handleViewCourses = (student) => {
-    toast(`Viewing courses for ${student.firstName} - Feature coming soon!`, {
-      icon: 'ℹ️',
-      duration: 3000,
-    });
+    setCoursesModalStudent(student);
+    setIsCoursesModalOpen(true);
+  };
+
+  const getEnrollmentCount = (studentId) => {
+    return enrollments.filter((e) => e.student_id === studentId).length;
   };
 
   if (loading) {
@@ -197,6 +206,7 @@ export default function Students() {
             <StudentCard
               key={student.id}
               student={student}
+              enrollmentCount={getEnrollmentCount(student.id)}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onViewCourses={handleViewCourses}
@@ -216,6 +226,14 @@ export default function Students() {
         student={selectedStudent}
         universities={universities}
         onSubmit={handleSubmit}
+      />
+
+      {/* Courses Modal */}
+      <StudentCoursesModal
+        isOpen={isCoursesModalOpen}
+        onClose={() => setIsCoursesModalOpen(false)}
+        student={coursesModalStudent}
+        onEnrollmentChange={fetchData}
       />
     </div>
   );

@@ -1,8 +1,8 @@
-import { User, Tag, Calendar, Users, Edit, Trash2 } from 'lucide-react';
+import { User, Tag, Calendar, Users, Edit, Trash2, UserCheck } from 'lucide-react';
 import { formatDate } from '../../utils/helpers';
 import Button from '../common/Button';
 
-export default function CourseCard({ course, onEdit, onDelete, onViewStudents }) {
+export default function CourseCard({ course, enrollmentCount = 0, onEdit, onDelete, onViewStudents }) {
   return (
     <div className="card hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
@@ -24,6 +24,11 @@ export default function CourseCard({ course, onEdit, onDelete, onViewStudents })
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Calendar className="w-4 h-4" />
               <span>{course.schedule}</span>
+            </div>
+            {/* Enrollment Count Badge */}
+            <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium w-fit">
+              <UserCheck className="w-3 h-3" />
+              {enrollmentCount} {enrollmentCount === 1 ? 'Student' : 'Students'} Enrolled
             </div>
           </div>
         </div>
