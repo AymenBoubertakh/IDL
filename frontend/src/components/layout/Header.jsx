@@ -6,7 +6,7 @@ export default function Header() {
       <div className="flex items-center justify-between h-full px-6">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">
-            Welcome back, Aymen! 👋
+            Welcome back, Aymen and Licya! 👋
           </h2>
           <p className="text-sm text-gray-500">
             {new Date().toLocaleDateString('en-US', { 
