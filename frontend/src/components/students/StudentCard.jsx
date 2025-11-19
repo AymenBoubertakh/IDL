@@ -17,18 +17,17 @@ export default function StudentCard({ student, enrollmentCount = 0, onEdit, onDe
             <h3 className="text-lg font-semibold text-gray-900">
               {student.firstName} {student.lastName}
             </h3>
-            <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
-              <Mail className="w-4 h-4" />
-              {student.email}
-            </div>
-            {student.university && (
-              <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
-                <MapPin className="w-4 h-4" />
-                {student.university.name}
+            <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4" />
+                {student.email}
               </div>
-            )}
-            {/* Enrollment Count Badge */}
-            <div className="flex items-center gap-2 mt-2">
+              {student.university && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  {student.university.name}
+                </div>
+              )}
               <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
                 <GraduationCap className="w-3 h-3" />
                 {enrollmentCount} {enrollmentCount === 1 ? 'Course' : 'Courses'}

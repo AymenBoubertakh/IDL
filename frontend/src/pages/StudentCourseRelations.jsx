@@ -8,6 +8,7 @@ import { getInitials } from '../utils/helpers';
 
 export default function StudentCourseRelations() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterCourse, setFilterCourse] = useState('');
   const [filterUniversity, setFilterUniversity] = useState('');
   const [viewMode, setViewMode] = useState('students'); // 'students' or 'courses'
 
@@ -32,15 +33,23 @@ export default function StudentCourseRelations() {
     ...new Set(students.map((s) => s.university?.name).filter(Boolean)),
   ];
 
+  // Get unique courses from all students
+  const allCourses = students.flatMap((s) => s.courses || []);
+  const uniqueCourses = Array.from(
+    new Map(allCourses.map((course) => [course.id, course])).values()
+  );
+
   // Filter students
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
       `${student.firstName} ${student.lastName} ${student.email}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
+    const matchesCourse =
+      !filterCourse || student.courses?.some((c) => String(c.id) === String(filterCourse));
     const matchesUniversity =
       !filterUniversity || student.university?.name === filterUniversity;
-    return matchesSearch && matchesUniversity;
+    return matchesSearch && matchesCourse && matchesUniversity;
   });
 
   return (
@@ -98,12 +107,28 @@ export default function StudentCourseRelations() {
 
       {/* Filters */}
       <div className="card">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SearchBar
             placeholder="Search students..."
             value={searchQuery}
             onChange={setSearchQuery}
           />
+
+          <div className="flex items-center gap-2">
+            <Filter className="w-5 h-5 text-gray-400" />
+            <select
+              value={filterCourse}
+              onChange={(e) => setFilterCourse(e.target.value)}
+              className="input-field"
+            >
+              <option value="">All Courses</option>
+              {uniqueCourses.map((course) => (
+                <option key={course.id} value={course.id}>
+                  {course.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex items-center gap-2">
             <Filter className="w-5 h-5 text-gray-400" />
