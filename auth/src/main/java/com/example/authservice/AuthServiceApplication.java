@@ -3,7 +3,6 @@ package com.example.authservice;
 import com.example.authservice.model.Role;
 import com.example.authservice.model.User;
 import com.example.authservice.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
