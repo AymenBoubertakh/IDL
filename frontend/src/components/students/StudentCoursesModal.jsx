@@ -3,10 +3,12 @@ import { BookOpen, Check, X } from 'lucide-react';
 import Modal from '../common/Modal';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { courseService } from '../../services/courseService';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { getInitials } from '../../utils/helpers';
 
 export default function StudentCoursesModal({ isOpen, onClose, student, onEnrollmentChange }) {
+  const { user } = useAuth();
   const [courses, setCourses] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +43,12 @@ export default function StudentCoursesModal({ isOpen, onClose, student, onEnroll
   };
 
   const handleToggleEnrollment = async (course) => {
+    // Check if USER is trying to manage enrollments for someone else
+    if (user?.role === 'USER' && student.user_id !== user.id) {
+      toast.error('You can only manage your own enrollments');
+      return;
+    }
+    
     setProcessingCourseId(course.id);
     try {
       if (isEnrolled(course.id)) {

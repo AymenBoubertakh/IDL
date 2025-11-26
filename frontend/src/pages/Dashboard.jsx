@@ -22,6 +22,7 @@ export default function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
+      console.log('Fetching dashboard data...');
       const [students, courses, universities, enrollments] = await Promise.all([
         studentService.getAllStudents(),
         courseService.getAllCourses(),
@@ -29,25 +30,38 @@ export default function Dashboard() {
         courseService.getAllEnrollments(),
       ]);
 
+      console.log('RAW Students response:', JSON.stringify(students));
+      console.log('RAW Courses response:', JSON.stringify(courses));
+      console.log('RAW Universities response:', JSON.stringify(universities));
+      console.log('RAW Enrollments response:', JSON.stringify(enrollments));
+
       setStats({
-        totalStudents: students.length,
-        totalCourses: courses.length,
-        totalUniversities: universities.length,
-        totalEnrollments: enrollments.length,
+        totalStudents: Array.isArray(students) ? students.length : 0,
+        totalCourses: Array.isArray(courses) ? courses.length : 0,
+        totalUniversities: Array.isArray(universities) ? universities.length : 0,
+        totalEnrollments: Array.isArray(enrollments) ? enrollments.length : 0,
       });
 
       // Generate recent activities from enrollments
-      const activities = enrollments.slice(0, 5).map((enrollment) => ({
-        type: 'enrollment',
-        title: 'New Enrollment',
-        description: `Student enrolled in a course`,
-        timestamp: enrollment.enrolled_at || new Date().toISOString(),
-      }));
+      const activities = Array.isArray(enrollments) 
+        ? enrollments.slice(0, 5).map((enrollment) => ({
+            type: 'enrollment',
+            title: 'New Enrollment',
+            description: `Student enrolled in a course`,
+            timestamp: enrollment.enrolled_at || new Date().toISOString(),
+          }))
+        : [];
 
       setRecentActivities(activities);
     } catch (error) {
+      console.error('Dashboard fetch error:', error);
       toast.error('Failed to load dashboard data');
-      console.error(error);
+      setStats({
+        totalStudents: 0,
+        totalCourses: 0,
+        totalUniversities: 0,
+        totalEnrollments: 0,
+      });
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,7 @@ import UniversityModal from '../components/universities/UniversityModal';
 import SearchBar from '../components/common/SearchBar';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import AdminOnly from '../components/common/AdminOnly';
 import toast from 'react-hot-toast';
 
 export default function Universities() {
@@ -150,6 +151,7 @@ export default function Universities() {
           <h1 className="text-3xl font-bold text-gray-900">Universities Management</h1>
           <p className="text-gray-600 mt-1">{universities.length} universities</p>
         </div>
+      <AdminOnly>
         <Button
           onClick={handleCreate}
           variant="primary"
@@ -158,9 +160,8 @@ export default function Universities() {
           <Plus size={20} />
           Add University
         </Button>
-      </div>
-
-      {/* Filters and Search */}
+      </AdminOnly>
+    </div>      {/* Filters and Search */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <SearchBar

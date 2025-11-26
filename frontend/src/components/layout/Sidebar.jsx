@@ -9,17 +9,19 @@ import {
   School 
 } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
+import { useAuth } from '../../context/AuthContext';
 
 const navigation = [
   { name: 'Dashboard', to: ROUTES.DASHBOARD, icon: LayoutDashboard },
   { name: 'Students', to: ROUTES.STUDENTS, icon: Users },
   { name: 'Courses', to: ROUTES.COURSES, icon: BookOpen },
   { name: 'Universities', to: ROUTES.UNIVERSITIES, icon: School },
-  { name: 'Relations', to: ROUTES.RELATIONS, icon: Network },
+  { name: 'Relations', to: ROUTES.RELATIONS, icon: Network, adminOnly: true },
   { name: 'AI Chatbot', to: ROUTES.CHATBOT, icon: Bot },
 ];
 
 export default function Sidebar() {
+  const { isAdmin } = useAuth();
   return (
     <div className="flex flex-col w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-0">
       {/* Logo */}
@@ -33,7 +35,9 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-1">
-        {navigation.map((item) => (
+        {navigation
+          .filter(item => !item.adminOnly || isAdmin())
+          .map((item) => (
           <NavLink
             key={item.name}
             to={item.to}

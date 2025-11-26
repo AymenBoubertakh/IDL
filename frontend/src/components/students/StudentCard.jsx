@@ -1,6 +1,7 @@
 import { Mail, MapPin, BookOpen, Edit, Trash2, GraduationCap } from 'lucide-react';
 import { getInitials } from '../../utils/helpers';
 import Button from '../common/Button';
+import AdminOnly from '../common/AdminOnly';
 
 export default function StudentCard({ student, enrollmentCount = 0, onEdit, onDelete, onViewCourses }) {
   return (
@@ -47,20 +48,22 @@ export default function StudentCard({ student, enrollmentCount = 0, onEdit, onDe
             <BookOpen className="w-4 h-4" />
             Courses
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => onEdit(student)}
-          >
-            <Edit className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => onDelete(student)}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+          <AdminOnly>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => onEdit(student)}
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => onDelete(student)}
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </AdminOnly>
         </div>
       </div>
     </div>

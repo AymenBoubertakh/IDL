@@ -8,11 +8,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayConfig {
 
-    /**
-     * Additional route configurations can be added here if needed
-     * Routes are primarily configured in application.yml
-     */
-    
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()

@@ -1,4 +1,5 @@
 import { MapPin, Users, Edit2, Trash2 } from 'lucide-react';
+import AdminOnly from '../common/AdminOnly';
 
 export default function UniversityCard({ university, studentCount, onEdit, onDelete, onViewStudents }) {
   return (
@@ -41,20 +42,22 @@ export default function UniversityCard({ university, studentCount, onEdit, onDel
           <Users size={16} />
           View Students
         </button>
-        <button
-          onClick={() => onEdit(university)}
-          className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-          title="Edit University"
-        >
-          <Edit2 size={16} />
-        </button>
-        <button
-          onClick={() => onDelete(university)}
-          className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-          title="Delete University"
-        >
-          <Trash2 size={16} />
-        </button>
+        <AdminOnly>
+          <button
+            onClick={() => onEdit(university)}
+            className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            title="Edit University"
+          >
+            <Edit2 size={16} />
+          </button>
+          <button
+            onClick={() => onDelete(university)}
+            className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+            title="Delete University"
+          >
+            <Trash2 size={16} />
+          </button>
+        </AdminOnly>
       </div>
     </div>
   );

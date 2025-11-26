@@ -4,10 +4,12 @@ import Modal from '../common/Modal';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { studentService } from '../../services/studentService';
 import { courseService } from '../../services/courseService';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { getInitials } from '../../utils/helpers';
 
 export default function CourseStudentsModal({ isOpen, onClose, course, onEnrollmentChange }) {
+  const { user } = useAuth();
   const [students, setStudents] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +28,11 @@ export default function CourseStudentsModal({ isOpen, onClose, course, onEnrollm
         studentService.getAllStudents(),
         courseService.getAllEnrollments(),
       ]);
-      setStudents(studentsData);
+      // Filter students: USER role can only see themselves
+      const filteredStudents = user?.role === 'USER'
+        ? studentsData.filter(s => s.user_id === user.id)
+        : studentsData;
+      setStudents(filteredStudents);
       setEnrollments(enrollmentsData);
     } catch (error) {
       toast.error('Failed to load students');
@@ -42,6 +48,12 @@ export default function CourseStudentsModal({ isOpen, onClose, course, onEnrollm
   };
 
   const handleToggleEnrollment = async (student) => {
+    // Check if USER is trying to manage enrollments for someone else
+    if (user?.role === 'USER' && student.user_id !== user.id) {
+      toast.error('You can only manage your own enrollments');
+      return;
+    }
+    
     setProcessingStudentId(student.id);
     try {
       if (isEnrolled(student.id)) {

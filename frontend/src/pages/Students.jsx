@@ -9,6 +9,7 @@ import StudentCoursesModal from '../components/students/StudentCoursesModal';
 import SearchBar from '../components/common/SearchBar';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import AdminOnly from '../components/common/AdminOnly';
 import toast from 'react-hot-toast';
 
 export default function Students() {
@@ -154,10 +155,12 @@ export default function Students() {
             {filteredStudents.length} {filteredStudents.length === 1 ? 'student' : 'students'}
           </p>
         </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2">
-          <Plus className="w-5 h-5" />
-          Add Student
-        </Button>
+        <AdminOnly>
+          <Button onClick={handleCreate} className="flex items-center gap-2">
+            <Plus className="w-5 h-5" />
+            Add Student
+          </Button>
+        </AdminOnly>
       </div>
 
       {/* Filters */}

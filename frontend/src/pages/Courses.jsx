@@ -7,6 +7,7 @@ import CourseStudentsModal from '../components/courses/CourseStudentsModal';
 import SearchBar from '../components/common/SearchBar';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import AdminOnly from '../components/common/AdminOnly';
 import toast from 'react-hot-toast';
 
 export default function Courses() {
@@ -141,16 +142,16 @@ export default function Courses() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Courses Management</h1>
           <p className="text-gray-600 mt-1">
-            {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
-          </p>
-        </div>
+          {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+        </p>
+      </div>
+      <AdminOnly>
         <Button onClick={handleCreate} className="flex items-center gap-2">
           <Plus className="w-5 h-5" />
           Add Course
         </Button>
-      </div>
-
-      {/* Filters */}
+      </AdminOnly>
+    </div>      {/* Filters */}
       <div className="card">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SearchBar

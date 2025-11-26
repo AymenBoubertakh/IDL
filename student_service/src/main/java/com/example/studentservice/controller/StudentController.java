@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/students")
@@ -17,9 +20,24 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
     
+    // Helper methods for role-based access control
+    private boolean isAdmin(HttpServletRequest request) {
+        String role = request.getHeader("X-User-Role");
+        return "ADMIN".equals(role);
+    }
+    
+    private ResponseEntity<Map<String, String>> forbiddenResponse(String message) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", message);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+    
     // Create a new student
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+    public ResponseEntity<?> createStudent(@RequestBody Student student, HttpServletRequest request) {
+        if (!isAdmin(request)) {
+            return forbiddenResponse("Access denied: Admin role required");
+        }
         try {
             Student savedStudent = studentService.createStudent(student);
             return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
@@ -74,7 +92,10 @@ public class StudentController {
     
     // Update student
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
+    public ResponseEntity<?> updateStudent(@PathVariable Long id, @RequestBody Student student, HttpServletRequest request) {
+        if (!isAdmin(request)) {
+            return forbiddenResponse("Access denied: Admin role required");
+        }
         try {
             Student updatedStudent = studentService.updateStudent(id, student);
             return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
@@ -85,7 +106,10 @@ public class StudentController {
     
     // Delete student
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+    public ResponseEntity<?> deleteStudent(@PathVariable Long id, HttpServletRequest request) {
+        if (!isAdmin(request)) {
+            return forbiddenResponse("Access denied: Admin role required");
+        }
         try {
             studentService.deleteStudent(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -96,9 +120,13 @@ public class StudentController {
     
     // Associate student with university
     @PutMapping("/{studentId}/university/{universityId}")
-    public ResponseEntity<Student> associateStudentWithUniversity(
+    public ResponseEntity<?> associateStudentWithUniversity(
             @PathVariable Long studentId, 
-            @PathVariable Long universityId) {
+            @PathVariable Long universityId,
+            HttpServletRequest request) {
+        if (!isAdmin(request)) {
+            return forbiddenResponse("Access denied: Admin role required");
+        }
         try {
             Student student = studentService.associateStudentWithUniversity(studentId, universityId);
             return new ResponseEntity<>(student, HttpStatus.OK);

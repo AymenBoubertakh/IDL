@@ -6,6 +6,14 @@ from .models import Course, StudentCourse
 from .serializers import CourseSerializer, StudentCourseSerializer
 
 
+# ============ HELPER FUNCTIONS ============
+
+def is_admin(request):
+    """Check if user has ADMIN role from request headers"""
+    role = request.META.get('HTTP_X_USER_ROLE')
+    return role == 'ADMIN'
+
+
 # ============ COURSE VIEWS ============
 
 @api_view(['GET', 'POST'])
@@ -43,6 +51,12 @@ def course_list(request):
         return Response(serializer.data)
     
     elif request.method == 'POST':
+        # Check if user has ADMIN role
+        if not is_admin(request):
+            return Response(
+                {"error": "Access denied: Admin role required"}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -68,6 +82,12 @@ def course_detail(request, pk):
         return Response(serializer.data)
     
     elif request.method == 'PUT':
+        # Check if user has ADMIN role
+        if not is_admin(request):
+            return Response(
+                {"error": "Access denied: Admin role required"}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
         serializer = CourseSerializer(course, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -75,6 +95,12 @@ def course_detail(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'DELETE':
+        # Check if user has ADMIN role
+        if not is_admin(request):
+            return Response(
+                {"error": "Access denied: Admin role required"}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
         course.delete()
         return Response({'message': 'Course deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 

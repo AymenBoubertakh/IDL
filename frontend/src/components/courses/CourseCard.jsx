@@ -1,6 +1,7 @@
 import { User, Tag, Calendar, Users, Edit, Trash2, UserCheck } from 'lucide-react';
 import { formatDate } from '../../utils/helpers';
 import Button from '../common/Button';
+import AdminOnly from '../common/AdminOnly';
 
 export default function CourseCard({ course, enrollmentCount = 0, onEdit, onDelete, onViewStudents }) {
   return (
@@ -44,20 +45,22 @@ export default function CourseCard({ course, enrollmentCount = 0, onEdit, onDele
             <Users className="w-4 h-4" />
             Students
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => onEdit(course)}
-          >
-            <Edit className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => onDelete(course)}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+          <AdminOnly>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => onEdit(course)}
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => onDelete(course)}
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </AdminOnly>
         </div>
       </div>
 

@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/universities")
@@ -17,9 +20,24 @@ public class UniversityController {
     @Autowired
     private UniversityService universityService;
     
+    // Helper methods for role-based access control
+    private boolean isAdmin(HttpServletRequest request) {
+        String role = request.getHeader("X-User-Role");
+        return "ADMIN".equals(role);
+    }
+    
+    private ResponseEntity<Map<String, String>> forbiddenResponse(String message) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", message);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+    
     // Create a new university
     @PostMapping
-    public ResponseEntity<University> createUniversity(@RequestBody University university) {
+    public ResponseEntity<?> createUniversity(@RequestBody University university, HttpServletRequest request) {
+        if (!isAdmin(request)) {
+            return forbiddenResponse("Access denied: Admin role required");
+        }
         University savedUniversity = universityService.saveUniversity(university);
         return new ResponseEntity<>(savedUniversity, HttpStatus.CREATED);
     }
@@ -55,7 +73,10 @@ public class UniversityController {
     
     // Update university
     @PutMapping("/{id}")
-    public ResponseEntity<University> updateUniversity(@PathVariable Long id, @RequestBody University university) {
+    public ResponseEntity<?> updateUniversity(@PathVariable Long id, @RequestBody University university, HttpServletRequest request) {
+        if (!isAdmin(request)) {
+            return forbiddenResponse("Access denied: Admin role required");
+        }
         try {
             University updatedUniversity = universityService.updateUniversity(id, university);
             return new ResponseEntity<>(updatedUniversity, HttpStatus.OK);
@@ -66,7 +87,10 @@ public class UniversityController {
     
     // Delete university
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUniversity(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUniversity(@PathVariable Long id, HttpServletRequest request) {
+        if (!isAdmin(request)) {
+            return forbiddenResponse("Access denied: Admin role required");
+        }
         try {
             universityService.deleteUniversity(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
